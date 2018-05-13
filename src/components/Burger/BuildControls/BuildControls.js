@@ -32,7 +32,7 @@ const buildControls = (props) => (
 buildControls.propTypes = {
     ingredientAdded: PropTypes.func,
     ingredientRemoved: PropTypes.func,
-    disabled: PropTypes.bool
+    disabled: PropTypes.object
 }
 
 export default buildControls;
