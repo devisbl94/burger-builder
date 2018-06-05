@@ -31,10 +31,13 @@ export const auth = (email, password, isSignup) => {
             password: password,
             returnSecureToken: true
         }
-        let url = 'https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key=AIzaSyA5VQYiYzoN3vNLN1AcByIum3lUBFuL1MM';
+        const googleURL = 'https://www.googleapis.com/identitytoolkit/v3/relyingparty';
+        let authAction = 'signupNewUser';
+        const key = 'AIzaSyA5VQYiYzoN3vNLN1AcByIum3lUBFuL1MM';
         if (!isSignup) {
-            url = 'https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key=AIzaSyA5VQYiYzoN3vNLN1AcByIum3lUBFuL1MM';
+            authAction = 'verifyPassword';
         }
+        let url = googleURL + '/' + authAction + '?key=' + key;
         axios.post(url, authData)
             .then(response => {
                 console.log(response);
