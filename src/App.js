@@ -29,7 +29,7 @@ class App extends Component {
       <Switch>
         <Route path="/auth" component={asyncAuth} />
         <Route path="/" exact component={BurgerBuilder} />
-        <Redirect to={this.props.authRedirectPath} />
+        <Redirect to="/" />
       </Switch>
     );
     if (this.props.isAuthenticated) {
@@ -38,8 +38,9 @@ class App extends Component {
           <Route path="/checkout" component={asyncCheckout} />
           <Route path="/orders" component={asyncOrders} />
           <Route path="/logout" component={Logout} />
+          <Route path="/auth" component={asyncAuth} />
           <Route path="/" exact component={BurgerBuilder} />
-          <Redirect to={this.props.authRedirectPath} />
+          <Redirect to="/" />
         </Switch>
       );
     }
