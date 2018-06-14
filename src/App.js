@@ -7,6 +7,7 @@ import Layout from './hoc/Layout/Layout';
 import BurgerBuilder from './containers/BurgerBuilder/BurgerBuilder';
 import Logout from './containers/Auth/Logout/Logout';
 import * as actions from './store/actions/index';
+import { isAuthenticated, getAuthRedirectPath } from './store/selectors/auth';
 
 const asyncCheckout = asyncComponent(() => {
   return import('./containers/Checkout/Checkout');
@@ -56,8 +57,8 @@ class App extends Component {
 
 const mapStateToProps = state => {
   return {
-    isAuthenticated: state.auth.token !== null,
-    authRedirectPath: state.auth.authRedirectPath
+    isAuthenticated: isAuthenticated(state),
+    authRedirectPath: getAuthRedirectPath(state)
   }
 }
 
