@@ -7,6 +7,8 @@ import Button from '../../components/UI/Button/Button';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import classes from './Auth.css';
 import * as actions from '../../store/actions/index';
+import { isLoading, getError, isAuthenticated, getAuthRedirectPath } from '../../store/selectors/auth';
+import { isBuildingBurger } from '../../store/selectors/burgerBuilder';
 import { updateObject, checkValidity } from '../../shared/utility' ;
 
 class Auth extends Component {
@@ -51,17 +53,6 @@ class Auth extends Component {
     }
 
     inputChangedHandler = (event, controlName) => {
-
-        // const updatedControls = {
-        //     ...this.state.controls,
-        //     [controlName]: {
-        //         ...this.state.controls[controlName],
-        //         value: event.target.value,
-        //         valid: this.checkValidity(event.target.value, this.state.controls[controlName].validation),
-        //         touched: true
-        //     }
-        // };
-
         const updatedControls = updateObject(this.state.controls, {
             [controlName]: updateObject(this.state.controls[controlName], {
                 value: event.target.value,
@@ -108,7 +99,7 @@ class Auth extends Component {
         let errorMessage = null;
         if (this.props.error) {
             errorMessage = (
-                <p>{this.props.error.message}</p>
+                <p>{this.props.error}</p>
             )
         }
 
@@ -135,11 +126,11 @@ class Auth extends Component {
 
 const mapStateToProps = state => {
     return {
-        loading: state.auth.loading,
-        error: state.auth.error,
-        isAuthenticated: state.auth.token !== null,
-        buildingBurger: state.burgerBuilder.building,
-        authRedirectPath: state.auth.authRedirectPath
+        loading: isLoading(state),
+        error: getError(state),
+        isAuthenticated: isAuthenticated(state),
+        buildingBurger: isBuildingBurger(state),
+        authRedirectPath: getAuthRedirectPath(state)
     }
 };
 

@@ -9,6 +9,9 @@ import axios from '../../../axios-orders';
 import withErrorHandler from '../../../hoc/withErrorHandler/withErrorHandler';
 import * as actions from '../../../store/actions/index';
 import { updateObject, checkValidity } from '../../../shared/utility';
+import { getUserId, getToken } from '../../../store/selectors/auth';
+import { getIngredients, getTotalPrice } from '../../../store/selectors/burgerBuilder';
+import { isLoading } from '../../../store/selectors/order';
 
 class ContactData extends Component {
     state = {
@@ -96,12 +99,10 @@ class ContactData extends Component {
             },
         },
         formIsValid: false
-        // loading: false
     }
 
     orderHandler = (event) => {
         event.preventDefault();
-        // this.setState({loading: true});
         const formData = {};
         for(let formElementIdentifier in this.state.orderForm) {
             formData[formElementIdentifier] = this.state.orderForm[formElementIdentifier].value;
@@ -112,30 +113,11 @@ class ContactData extends Component {
             orderData: formData,
             userId: this.props.userId
         }
-        // axios.post('/orders.json', order)
-        //     .then(response => {
-        //         this.setState({loading: false});
-        //         this.props.history.push('/');
-        //     })
-        //     .catch(error => {
-        //         this.setState({ loading: false});
-        //     });
 
         this.props.onOrderBurger(order, this.props.token);
     }
 
     inputChangedHandler = (event, inputIdentifier) => {
-        // const updatedOrderForm = {
-        //     ...this.state.orderForm
-        // };
-        // const updatedFormElement = {
-        //     ...updatedOrderForm[inputIdentifier]
-        // };
-        // updatedFormElement.value = event.target.value;
-        // updatedFormElement.valid = this.checkValidity(updatedFormElement.value, updatedFormElement.validation);
-        // updatedFormElement.touched = true;
-        // updatedOrderForm[inputIdentifier] = updatedFormElement;
-
         const updatedFormElement = updateObject(this.state.orderForm[inputIdentifier], {
             value: event.target.value,
             valid: checkValidity(event.target.value, this.state.orderForm[inputIdentifier].validation),
@@ -189,11 +171,11 @@ class ContactData extends Component {
 
 const mapStateToProps = state => {
     return {
-        ings: state.burgerBuilder.ingredients,
-        price: state.burgerBuilder.totalPrice,
-        loading: state.order.loading,
-        token: state.auth.token,
-        userId: state.auth.userId
+        ings: getIngredients(state),
+        price: getTotalPrice(state),
+        loading: isLoading(state),
+        token: getToken(state),
+        userId: getUserId(state)
     }
 }
 
