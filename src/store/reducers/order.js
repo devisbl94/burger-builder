@@ -1,22 +1,25 @@
-import * as actionTypes from '../actions/actionTypes';
+import { createReducer } from 'reduxsauce';
+import { Types as ReduxSauceTypes } from 'reduxsauce';
+import actionTypes from '../actions/actionTypes';
 import { updateObject } from '../../shared/utility';
 
-const initialState = {
+const INITIAL_STATE = {
     orders: [],
     loading: false,
     purchased: false
 };
 
-const purchaseInit = (state, action) => {
+const purchaseInit = (state = INITIAL_STATE, action) => {
     return updateObject(state, { purchased: false });
 }
 
-const purchaseBurgerStart = (state, action) => {
+const purchaseBurgerStart = (state = INITIAL_STATE, action) => {
     return updateObject(state, { loading: true });
 }
 
-const purchaseBurgerSuccess = (state, action) => {
-    const newOrder = updateObject(action.orderData, { id: action.orderId });
+const purchaseBurgerSuccess = (state = INITIAL_STATE, action) => {
+    const { orderData, orderId } = action;
+    const newOrder = updateObject(orderData, { id: orderId });
     return updateObject(state, {
         loading: false,
         purchased: true,
@@ -24,36 +27,39 @@ const purchaseBurgerSuccess = (state, action) => {
     });
 }
 
-const purchaseBurgerFail = (state, action) => {
+const purchaseBurgerFail = (state = INITIAL_STATE, action) => {
     return updateObject(state, { loading: false });
 }
 
-const fetchOrdersStart = (state, action) => {
+const fetchOrdersStart = (state = INITIAL_STATE, action) => {
     return updateObject(state, { loading: true });  
 }
 
-const fetchOrdersSuccess = (state, action) => {
+const fetchOrdersSuccess = (state = INITIAL_STATE, action) => {
+    const { orders } = action;
     return updateObject(state, {
         loading: false,
-        orders: action.orders
+        orders: orders
     });
 }
 
-const fetchOrdersFail = (state, action) => {
+const fetchOrdersFail = (state = INITIAL_STATE, action) => {
     return updateObject(state, { loading: false });  
 }
 
-const reducer = (state = initialState, action) => {
-    switch (action.type) {
-        case actionTypes.PURCHASE_INIT: return purchaseInit(state, action);
-        case actionTypes.PURCHASE_BURGUER_START: return purchaseBurgerStart(state, action);
-        case actionTypes.PURCHASE_BURGUER_SUCCESS: return purchaseBurgerSuccess(state, action);
-        case actionTypes.PURCHASE_BURGUER_FAIL: return purchaseBurgerFail(state, action);
-        case actionTypes.FETCH_ORDERS_START: return fetchOrdersStart(state, action);
-        case actionTypes.FETCH_ORDERS_SUCCESS: return fetchOrdersSuccess(state, action);
-        case actionTypes.FETCH_ORDERS_FAIL: return fetchOrdersFail(state, action);
-        default: return state;
-    }
-};
+const defaultHandler = (state = INITIAL_STATE) => {
+    return state;
+}
 
-export default reducer;
+const HANDLERS = {
+    [actionTypes.PURCHASE_INIT]: purchaseInit,
+    [actionTypes.PURCHASE_BURGER_START]: purchaseBurgerStart,
+    [actionTypes.PURCHASE_BURGER_SUCCESS]: purchaseBurgerSuccess,
+    [actionTypes.PURCHASE_BURGER_FAIL]: purchaseBurgerFail,
+    [actionTypes.FETCH_ORDERS_START]: fetchOrdersStart,
+    [actionTypes.FETCH_ORDERS_SUCCESS]: fetchOrdersSuccess,
+    [actionTypes.FETCH_ORDERS_FAIL]: fetchOrdersFail,
+    [ReduxSauceTypes.DEFAULT]: defaultHandler
+}
+
+export default createReducer(INITIAL_STATE, HANDLERS);

@@ -1,4 +1,26 @@
-export const getIngredients = state => state.burgerBuilder.ingredients;
-export const getTotalPrice = state => state.burgerBuilder.totalPrice;
-export const isBuildingBurger = state => state.burgerBuilder.building;
-export const getError = state => state.burgerBuilder.error;
+import { createSelector } from 'reselect';
+
+const ingredientsSelector = state => state.burgerBuilder.ingredients;
+const totalPriceSelector = state => state.burgerBuilder.totalPrice;
+const buildingSelector = state => state.burgerBuilder.building;
+const errorSelector = state => state.burgerBuilder.error;
+
+export const getIngredients = createSelector(
+    ingredientsSelector,
+    ingredients => ingredients
+);
+
+export const getTotalPrice = createSelector(
+    totalPriceSelector,
+    totalPrice => totalPrice
+);
+
+export const isBuildingBurger = createSelector(
+    buildingSelector,
+    building => building
+);
+
+export const getError = createSelector(
+    errorSelector,
+    error => error ? error.message : null
+);
